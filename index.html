@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<style type="text/css">
+		body{
+			font-family: "Microsoft YaHei";
+		}
+		table{
+			width: 100%;
+			border-right: 1px solid #ccc;
+			border-bottom: 1px solid #ccc;
+		}
+		table td, table th{
+			padding: 6px 10px;
+		    font-size: 13px;
+		    line-height: 1.3;
+		    /* cell为空是否隐藏 */
+		    /*empty-cells: hide;*/
+			border-left: 1px solid #ccc;
+			border-top: 1px solid #ccc;
+		}
+		.support{
+			background-color: #90FF90;
+		}
+		.unsupport{
+			background-color: #FF9090;
+		}
+	</style>
+</head>
+<body>
+	<h2>浏览器CSS兼容检测
+		<button onclick="prints()">打印</button>
+	</h2>
+	<div id="contain"></div>
+<script src="data.js"></script>
+<script>
+	function createElement(type) {
+		return document.createElement(type);
+	}
+	function createdTr(css, cssType, desc, maxlength, testDom, setTh) {
+		var trLength = Math.ceil(css.length / maxlength);
+		var cssLength = css.length;
+		var _allTr = [];
+		var _th = createElement('th');
+		_th.style.width = '80px'
+		var _tdTitle = createElement('td');
+		_th.innerHTML = cssType;
+		_tdTitle.innerHTML = desc;
+		_tdTitle.rowSpan = trLength;
+		for(var i = 1; i <= trLength; i++) {
+			var _tr = createElement('tr');
+			if(i == 1) {
+				if(setTh) {
+					_tr.appendChild(_th);
+				}
+				_tr.appendChild(_tdTitle);
+			}
+			var _maxlength = i * maxlength;
+			var length = _maxlength > cssLength ? cssLength : _maxlength;
+			for( var j = (_maxlength - maxlength); j < length; j++ ) {
+				var _td = createElement('td');
+				testDom.style[cssType] = css[j];
+				if(testDom.style[cssType] === css[j]) {
+					_td.className = 'support';
+				} else {
+					_td.className = 'unsupport';;
+				}
+				_td.innerHTML = css[j];
+				_tr.appendChild(_td);
+			}
+			length = maxlength > length ?  maxlength - length : length % maxlength;
+			if(length !== 0) {
+				var whiteTd = createElement('td');
+				whiteTd.colSpan = length;
+				_tr.appendChild(whiteTd);
+			}
+			_allTr.push(_tr);
+		}
+		return _allTr
+	}
+	function checkCss(css) {
+		var element = createElement('div');
+		var _table = createElement('table');
+		_table.cellSpacing = '0';
+		_table.cellPadding = '0';
+		_table.border = '0';
+		for( var i = 0; i < css.length; i++) {
+			var cssType = css[i].type;
+			var css2 = css[i].css2;
+			var css3 = css[i].css3;
+			var prefix = css[i].prefix;
+
+			if(cssType in element.style) {
+				var trs = createdTr(css2, cssType, 'css2', 10, element, true);
+				var trs1 = createdTr(css3, cssType, 'css3', 10, element);
+				var trs2 = createdTr(prefix, cssType, '-x-', 10, element);
+				trs[0].firstChild.rowSpan = trs.length + trs1.length + trs2.length;
+				for(var j = 0; j < trs.length; j++) {
+					_table.appendChild(trs[j]);
+				}
+				for(var k = 0; k < trs1.length; k++) {
+					_table.appendChild(trs1[k]);
+				}
+				for(var l = 0; l < trs2.length; l++) {
+					_table.appendChild(trs2[l]);
+				}
+			}
+		}
+		document.getElementById('contain').appendChild(_table);
+	}
+	function prints() {
+		window.print();
+	}
+	function calc(num) {
+		var result = false;
+		var max = Math.floor(Math.sqrt(num))
+		for(var i = 1; i <= max; i++) {
+			var begin = max - i + 1;
+			if(begin > i) {
+				for(var j = begin; j <= max; j++) {
+					if( i * i + j * j == num) {
+						result = true;
+					}
+				}
+			}
+		}
+		return result;
+	}
+	checkCss(css);
+	// alert(checkCss('display', 'grid'))
+
+</script>
+
+</body>
+</html>
