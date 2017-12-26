@@ -27,5 +27,15 @@ var cssNext = {
 		{ type: 'align-self', value: 'flex-start' },
 		{ type: 'justify-content', value: 'flex-start' },
 		{ type: 'order', value: '1' }
+	],
+	'-webkit-box': [
+		{ type: '-webkit-box-orient', value: 'horizontal' },
+		{ type: '-webkit-box-pack', value: 'start' },
+		{ type: '-webkit-box-align', value: 'start' },
+		{ type: '-webkit-box-flex', value: '1' },
+		{ type: '-webkit-box-flex-group', value: '1' },
+		{ type: '-webkit-box-ordinal-group', value: '1' },
+		{ type: '-webkit-box-direction', value: 'normal' },
+		{ type: '-webkit-box-lines', value: 'single' },
 	]
 }

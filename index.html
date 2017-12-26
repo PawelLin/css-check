@@ -98,52 +98,62 @@
 			var length = _maxlength > cssLength ? cssLength : _maxlength;
 			for( var j = (_maxlength - maxlength); j < length; j++ ) {
 				var _td = createElement('td');
-				testDom.style[cssType] = css[j];
-
-				if(testDom.style[cssType] === css[j]) {
-					_td.className = 'support';
-					if (cssNext[css[j]]) {
-						_td.style.cursor = 'pointer';
-						_td.onclick = function (that) {
-							var childTable = child.querySelector('table');
-							var childTbody = createElement('tbody');
-							var theElem = that.srcElement;
-							var top = theElem.offsetHeight * 2 + theElem.offsetTop + 3 + 'px';
-							var left = theElem.offsetLeft + 'px'
-							var type = theElem.innerHTML;
-							var _cssNext = cssNext[type]
-							child.querySelector('#child-th').innerHTML = cssType + ': ' + type;
-							childTable.querySelector('tbody').remove();
-							for (var k = 0; k < _cssNext.length; k++) {
-								var childTr = createElement('tr');
-								var childTd1 = createElement('td');
-								var childTd2 = createElement('td');
-								testDom.style[_cssNext[k].type] = _cssNext[k].value
-								if (testDom.style[_cssNext[k].type] === _cssNext[k].value) {
-									childTd1.className = 'support';
-									childTd2.className = 'support';
-								} else {
-									childTd1.className = 'unsupport';
-									childTd2.className = 'unsupport';
+				if (testDom.style[cssType] !== undefined) {
+					testDom.style[cssType] = css[j];
+					if(testDom.style[cssType] === css[j]) {
+						_td.className = 'support';
+						if (cssNext[css[j]]) {
+							_td.style.cursor = 'pointer';
+							_td.onclick = function (that) {
+								var childTestDom = createElement('div')
+								document.body.appendChild(childTestDom)
+								var childTable = child.querySelector('table');
+								var childTbody = createElement('tbody');
+								var theElem = that.srcElement;
+								var top = theElem.offsetHeight * 2 + theElem.offsetTop + 3 + 'px';
+								var left = theElem.offsetLeft + 'px'
+								var type = theElem.innerHTML;
+								var _cssNext = cssNext[type]
+								child.querySelector('#child-th').innerHTML = cssType + ': ' + type;
+								childTable.querySelector('tbody').remove();
+								for (var k = 0; k < _cssNext.length; k++) {
+									var childTr = createElement('tr');
+									var childTd1 = createElement('td');
+									var childTd2 = createElement('td');
+									if (childTestDom.style[_cssNext[k].type] !== undefined) {
+										childTestDom.style[_cssNext[k].type] = _cssNext[k].value
+										if (childTestDom.style[_cssNext[k].type] === _cssNext[k].value) {
+											childTd1.className = 'support';
+											childTd2.className = 'support';
+										} else {
+											childTd1.className = 'unsupport';
+											childTd2.className = 'unsupport';
+										}
+									} else {
+										childTd1.className = 'unsupport';
+										childTd2.className = 'unsupport';
+									}
+									childTd1.innerHTML = _cssNext[k].type;
+									childTr.appendChild(childTd1);
+									childTd2.innerHTML = _cssNext[k].value
+									childTr.appendChild(childTd2);
+									childTbody.appendChild(childTr);
 								}
-								childTd1.innerHTML = _cssNext[k].type;
-								childTr.appendChild(childTd1);
-								childTd2.innerHTML = _cssNext[k].value
-								childTr.appendChild(childTd2);
-								childTbody.appendChild(childTr);
-							}
-							childTable.appendChild(childTbody);
-							if (left === child.style.left && childTable.style.transform === 'scale(1)') {
-								childTable.style.transform = 'scale(0)';
-							} else {
-								child.style.top = top;
-								child.style.left = left;
-								childTable.style.transform = 'scale(1)';
+								childTable.appendChild(childTbody);
+								if (left === child.style.left && childTable.style.transform === 'scale(1)') {
+									childTable.style.transform = 'scale(0)';
+								} else {
+									child.style.top = top;
+									child.style.left = left;
+									childTable.style.transform = 'scale(1)';
+								}
 							}
 						}
+					} else {
+						_td.className = 'unsupport';
 					}
 				} else {
-					_td.className = 'unsupport';;
+					_td.className = 'unsupport';
 				}
 				_td.innerHTML = css[j];
 				_tr.appendChild(_td);
