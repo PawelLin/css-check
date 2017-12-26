@@ -14,11 +14,12 @@
     <meta http-equiv="Cache" content="no-cache">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 	<style type="text/css">
-		html,body,h2,div,table,thead,th,tbody,tr,td,tfoot {
+		* {
 			margin: 0;
 			padding: 0;
 		}
 		body{
+			padding: 5px 10px;
 			font-family: "Microsoft YaHei";
 		}
 		table{
@@ -38,6 +39,9 @@
 		.support{
 			background-color: #90FF90;
 		}
+		.support-next{
+			background-color: #90f0ff;
+		}
 		.unsupport{
 			background-color: #FF9090;
 		}
@@ -55,14 +59,14 @@
 	</style>
 </head>
 <body>
-	<h2>浏览器CSS兼容检测
-		<button onclick="prints()">打印</button>
-	</h2>
+	<header>
+		<h3>浏览器CSS兼容检测</h3>
+	</header>
 	<div id="contain"></div>
 	<div id="child">
 		<!-- <div class="content"> -->
 			<table cellpadding="0" cellspacing="0">
-				<thead>
+				<thead class="support-next">
 					<th id="child-th" colspan="2"></th>
 				</thead>
 				<tbody>
@@ -103,6 +107,7 @@
 					if(testDom.style[cssType] === css[j]) {
 						_td.className = 'support';
 						if (cssNext[css[j]]) {
+							_td.className = 'support-next'
 							_td.style.cursor = 'pointer';
 							_td.onclick = function (that) {
 								var childTestDom = createElement('div')
@@ -110,8 +115,8 @@
 								var childTable = child.querySelector('table');
 								var childTbody = createElement('tbody');
 								var theElem = that.srcElement;
-								var top = theElem.offsetHeight * 2 + theElem.offsetTop + 3 + 'px';
-								var left = theElem.offsetLeft + 'px'
+								var top = theElem.offsetHeight * 2 + theElem.offsetTop + 'px';
+								var left = theElem.offsetLeft + 10 + 'px'
 								var type = theElem.innerHTML;
 								var _cssNext = cssNext[type]
 								child.querySelector('#child-th').innerHTML = cssType + ': ' + type;
@@ -123,8 +128,8 @@
 									if (childTestDom.style[_cssNext[k].type] !== undefined) {
 										childTestDom.style[_cssNext[k].type] = _cssNext[k].value
 										if (childTestDom.style[_cssNext[k].type] === _cssNext[k].value) {
-											childTd1.className = 'support';
-											childTd2.className = 'support';
+											childTd1.className = 'support-next';
+											childTd2.className = 'support-next';
 										} else {
 											childTd1.className = 'unsupport';
 											childTd2.className = 'unsupport';
