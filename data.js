@@ -12,3 +12,20 @@ var css = [
 		prefix: ['-webkit-sticky']
 	}
 ];
+
+var cssNext = {
+	flex: [
+		{ type: 'flex', value: '1 1 0%' },
+		{ type: 'flex-grow', value: '1' },
+		{ type: 'flex-shrink', value: '1' },
+		{ type: 'flex-basis', value: '0%' },
+		{ type: 'flex-flow', value: 'row nowrap' },
+		{ type: 'flex-direction', value: 'row' },
+		{ type: 'flex-wrap', value: 'nowrap' },
+		{ type: 'align-content', value: 'flex-start' },
+		{ type: 'align-items', value: 'flex-start' },
+		{ type: 'align-self', value: 'flex-start' },
+		{ type: 'justify-content', value: 'flex-start' },
+		{ type: 'order', value: '1' }
+	]
+}

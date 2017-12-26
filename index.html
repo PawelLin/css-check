@@ -2,8 +2,22 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title></title>
+	<title>浏览器CSS兼容检测</title>
+	<meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta name="description" content="">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta http-equiv="expires" content="Wed, 20 Jun 2007 22:33:00 GMT">
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 	<style type="text/css">
+		html,body,h2,div,table,thead,th,tbody,tr,td,tfoot {
+			margin: 0;
+			padding: 0;
+		}
 		body{
 			font-family: "Microsoft YaHei";
 		}
@@ -27,6 +41,17 @@
 		.unsupport{
 			background-color: #FF9090;
 		}
+		#child {
+			position: fixed;
+			transition: .5s all;
+		}
+		#child > table {
+			width: auto;
+			background-color: #fff;
+			transform: scale(0);
+			transition: .5s all;
+			transform-origin: 0 0;
+		}
 	</style>
 </head>
 <body>
@@ -34,12 +59,24 @@
 		<button onclick="prints()">打印</button>
 	</h2>
 	<div id="contain"></div>
+	<div id="child">
+		<!-- <div class="content"> -->
+			<table cellpadding="0" cellspacing="0">
+				<thead>
+					<th id="child-th" colspan="2"></th>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		<!-- </div> -->
+	</div>
 <script src="data.js"></script>
 <script>
 	function createElement(type) {
 		return document.createElement(type);
 	}
-	function createdTr(css, cssType, desc, maxlength, testDom, setTh) {
+	function createdTr(css, cssType, desc, maxlength, testDom, cssNext, setTh) {
+		var child = document.getElementById('child')
 		var trLength = Math.ceil(css.length / maxlength);
 		var cssLength = css.length;
 		var _allTr = [];
@@ -62,8 +99,49 @@
 			for( var j = (_maxlength - maxlength); j < length; j++ ) {
 				var _td = createElement('td');
 				testDom.style[cssType] = css[j];
+
 				if(testDom.style[cssType] === css[j]) {
 					_td.className = 'support';
+					if (cssNext[css[j]]) {
+						_td.style.cursor = 'pointer';
+						_td.onclick = function (that) {
+							var childTable = child.querySelector('table');
+							var childTbody = createElement('tbody');
+							var theElem = that.srcElement;
+							var top = theElem.offsetHeight * 2 + theElem.offsetTop + 3 + 'px';
+							var left = theElem.offsetLeft + 'px'
+							var type = theElem.innerHTML;
+							var _cssNext = cssNext[type]
+							child.querySelector('#child-th').innerHTML = cssType + ': ' + type;
+							childTable.querySelector('tbody').remove();
+							for (var k = 0; k < _cssNext.length; k++) {
+								var childTr = createElement('tr');
+								var childTd1 = createElement('td');
+								var childTd2 = createElement('td');
+								testDom.style[_cssNext[k].type] = _cssNext[k].value
+								if (testDom.style[_cssNext[k].type] === _cssNext[k].value) {
+									childTd1.className = 'support';
+									childTd2.className = 'support';
+								} else {
+									childTd1.className = 'unsupport';
+									childTd2.className = 'unsupport';
+								}
+								childTd1.innerHTML = _cssNext[k].type;
+								childTr.appendChild(childTd1);
+								childTd2.innerHTML = _cssNext[k].value
+								childTr.appendChild(childTd2);
+								childTbody.appendChild(childTr);
+							}
+							childTable.appendChild(childTbody);
+							if (left === child.style.left && childTable.style.transform === 'scale(1)') {
+								childTable.style.transform = 'scale(0)';
+							} else {
+								child.style.top = top;
+								child.style.left = left;
+								childTable.style.transform = 'scale(1)';
+							}
+						}
+					}
 				} else {
 					_td.className = 'unsupport';;
 				}
@@ -80,7 +158,7 @@
 		}
 		return _allTr
 	}
-	function checkCss(css) {
+	function checkCss(css, cssNext) {
 		var element = createElement('div');
 		var _table = createElement('table');
 		_table.cellSpacing = '0';
@@ -93,9 +171,9 @@
 			var prefix = css[i].prefix;
 
 			if(cssType in element.style) {
-				var trs = createdTr(css2, cssType, 'css2', 10, element, true);
-				var trs1 = createdTr(css3, cssType, 'css3', 10, element);
-				var trs2 = createdTr(prefix, cssType, '-x-', 10, element);
+				var trs = createdTr(css2, cssType, 'css2', 10, element, cssNext, true);
+				var trs1 = createdTr(css3, cssType, 'css3', 10, element, cssNext);
+				var trs2 = createdTr(prefix, cssType, '-x-', 10, element, cssNext);
 				trs[0].firstChild.rowSpan = trs.length + trs1.length + trs2.length;
 				for(var j = 0; j < trs.length; j++) {
 					_table.appendChild(trs[j]);
@@ -128,7 +206,7 @@
 		}
 		return result;
 	}
-	checkCss(css);
+	checkCss(css, cssNext);
 	// alert(checkCss('display', 'grid'))
 
 </script>
